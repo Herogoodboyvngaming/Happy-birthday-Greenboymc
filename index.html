@@ -27,7 +27,6 @@
             min-height: 100vh;
         }
 
-        /* Background đen mặc định (đã xóa nút đổi background) */
         .background {
             position: fixed;
             inset: 0;
@@ -42,6 +41,32 @@
             z-index: -1;
         }
 
+        .locked-screen {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 1000;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .locked-screen h2 {
+            font-size: clamp(2em, 8vw, 4em);
+            color: #ffd700;
+            text-shadow: 0 0 40px #ff69b4;
+            margin-bottom: 20px;
+        }
+
+        .locked-screen p {
+            font-size: clamp(1.2em, 5vw, 2em);
+            color: #ff69b4;
+            max-width: 90%;
+        }
+
         .container {
             text-align: center;
             padding: clamp(20px, 5vw, 40px);
@@ -53,6 +78,7 @@
             max-height: 95vh;
             overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            display: none; /* Ẩn mặc định, chỉ hiện khi đến giờ */
         }
 
         .emoji-top, .emoji-bottom {
@@ -223,14 +249,15 @@
     <div class="background"></div>
     <div class="overlay"></div>
 
-    <div class="fireworks" id="fireworks">
-        <img src="https://i.pinimg.com/originals/76/b5/82/76b58298e9cee7c935f9ec9ba1433508.gif" loading="lazy">
-        <img src="https://i.pinimg.com/originals/7a/f2/ef/7af2ef0b0b2294982218b48d4a1f488b.gif" loading="lazy">
-        <img src="https://media.tenor.com/ZYSYsmBaqHMAAAAM/fireworks-firework.gif" loading="lazy">
-        <img src="https://i.gifer.com/7J8Z.gif" loading="lazy">
+    <!-- Màn hình khóa đến 00:00 ngày 28/02/2026 -->
+    <div class="locked-screen" id="lockedScreen">
+        <h2>WEBSITE ĐÃ KHÓA</h2>
+        <p>Chờ đến 00:00 ngày 28/02/2026 để mở tự động và chúc mừng sinh nhật Greenboymc nhé! 🎂</p>
+        <p>Còn lại: <span id="lockCountdown"></span></p>
     </div>
 
-    <main class="container">
+    <!-- Nội dung chính (ẩn đến khi mở) -->
+    <main class="container" id="mainContent">
         <div class="emoji-top">🎉🥳🎂🎊🎆🎈✨</div>
 
         <h1 class="rainbow-border">NGUYỄN XUÂN BẮC<br>(Greenboymc)</h1>
@@ -262,6 +289,87 @@
     </main>
 
     <script>
+        // Ngày mở khóa: 00:00 ngày 28/02/2026
+        const unlockDate = new Date(2026, 1, 28, 0, 0, 0); // Tháng 2 index 1, 00:00
+
+        const lockedScreen = document.getElementById('lockedScreen');
+        const mainContent = document.getElementById('mainContent');
+        const lockCountdownEl = document.getElementById('lockCountdown');
+
+        function checkUnlock() {
+            const now = new Date();
+            if (now >= unlockDate) {
+                lockedScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                startBirthdayCountdown();
+            } else {
+                // Đếm ngược đến 00:00
+                const diff = unlockDate - now;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                lockCountdownEl.textContent = `${days} ngày ${hours.toString().padStart(2, '0')} giờ ${minutes.toString().padStart(2, '0')} phút ${seconds.toString().padStart(2, '0')} giây`;
+                setTimeout(checkUnlock, 1000);
+            }
+        }
+
+        checkUnlock();
+
+        // Countdown sinh nhật (chỉ chạy khi đã mở khóa)
+        function startBirthdayCountdown() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            let nextBirthday = new Date(currentYear, 1, 28, 20, 0, 0); // 20:00 ngày 28/02
+
+            if (now > nextBirthday) {
+                nextBirthday.setFullYear(currentYear + 1);
+            }
+
+            const countdownEl = document.getElementById('countdown');
+            const celebrationEl = document.getElementById('celebration');
+            const fireworksEl = document.getElementById('fireworks');
+
+            let lastSecond = 0;
+
+            function updateCountdown(time) {
+                const currentSecond = Math.floor(time / 1000);
+                if (currentSecond === lastSecond) {
+                    requestAnimationFrame(updateCountdown);
+                    return;
+                }
+                lastSecond = currentSecond;
+
+                const diff = nextBirthday - Date.now();
+
+                if (diff <= 0) {
+                    countdownEl.style.opacity = '0';
+                    setTimeout(() => {
+                        countdownEl.style.display = 'none';
+                        celebrationEl.style.display = 'block';
+                        celebrationEl.style.opacity = '1';
+                        fireworksEl.classList.add('active');
+                    }, 1200);
+                    return;
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+
+                requestAnimationFrame(updateCountdown);
+            }
+
+            requestAnimationFrame(updateCountdown);
+        }
+
         // Emoji bay (nhẹ, mượt, giới hạn để không lag)
         const emojis = ['🎉','🎊','🎂','🥳','🎈','🎁','🍰','✨','🎆','🎇','🎀','🍭','🎁','🥂'];
         let activeEmojis = 0;
@@ -283,57 +391,6 @@
                 activeEmojis--;
             }, 1800);
         });
-
-        // Countdown chuẩn đến 20:00 ngày 28/02 năm tới (từ 2004)
-        const now = new Date();
-        const currentYear = now.getFullYear();
-        let nextBirthday = new Date(currentYear, 1, 28, 20, 0, 0); // Tháng 2 index 1, 20:00
-
-        if (now > nextBirthday) {
-            nextBirthday.setFullYear(currentYear + 1);
-        }
-
-        const countdownEl = document.getElementById('countdown');
-        const celebrationEl = document.getElementById('celebration');
-        const fireworksEl = document.getElementById('fireworks');
-
-        let lastSecond = 0;
-
-        function updateCountdown(time) {
-            const currentSecond = Math.floor(time / 1000);
-            if (currentSecond === lastSecond) {
-                requestAnimationFrame(updateCountdown);
-                return;
-            }
-            lastSecond = currentSecond;
-
-            const diff = nextBirthday - Date.now();
-
-            if (diff <= 0) {
-                countdownEl.style.opacity = '0';
-                setTimeout(() => {
-                    countdownEl.style.display = 'none';
-                    celebrationEl.style.display = 'block';
-                    celebrationEl.style.opacity = '1';
-                    fireworksEl.classList.add('active');
-                }, 1200);
-                return;
-            }
-
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-            document.getElementById('days').textContent = days.toString().padStart(2, '0');
-            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
-
-            requestAnimationFrame(updateCountdown);
-        }
-
-        requestAnimationFrame(updateCountdown);
 
         // Tự động lời chúc + nút bật/tắt
         const toggleWishBtn = document.getElementById('toggleWishBtn');
@@ -371,11 +428,6 @@
                 isWishActive = true;
             }
         });
-
-        // Tự động bật lời chúc khi đến giờ sinh nhật (trong khoảng 10 phút quanh giờ)
-        if (Date.now() >= nextBirthday.getTime() - 60000 && Date.now() <= nextBirthday.getTime() + 600000) {
-            toggleWishBtn.click(); // Tự bật
-        }
     </script>
 </body>
 </html>
