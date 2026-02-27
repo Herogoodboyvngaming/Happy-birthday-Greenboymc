@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chúc mừng sinh nhật Nguyễn Xuân Bắc (Greenboymc) 🎉</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #fff;
+            background: #000;
+            touch-action: manipulation;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Background đen mặc định (đã xóa nút đổi background) */
+        .background {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: -2;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.6));
+            z-index: -1;
+        }
+
+        .container {
+            text-align: center;
+            padding: clamp(20px, 5vw, 40px);
+            background: rgba(0, 0, 0, 0.45);
+            border-radius: 30px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            max-width: 95%;
+            max-height: 95vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .emoji-top, .emoji-bottom {
+            font-size: clamp(3em, 10vw, 5em);
+            margin: 20px 0;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-25px); }
+        }
+
+        h1 {
+            font-size: clamp(2.5em, 8vw, 4.5em);
+            color: #ffd700;
+            text-shadow: 0 0 40px #ff69b4, 0 0 80px #ff1493;
+            margin: 30px 0;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: clamp(1.2em, 5vw, 2.2em);
+            color: #ff69b4;
+            text-shadow: 0 0 25px #ffd700;
+            margin: 20px 0;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: clamp(15px, 5vw, 30px);
+            margin: 60px 0;
+            flex-wrap: wrap;
+        }
+
+        .time-box {
+            background: rgba(255, 255, 255, 0.15);
+            padding: clamp(20px, 5vw, 35px);
+            border-radius: 25px;
+            min-width: clamp(120px, 30vw, 160px);
+            backdrop-filter: blur(10px);
+            border: 4px solid #ff69b4;
+            box-shadow: 0 10px 40px rgba(255, 105, 180, 0.5);
+        }
+
+        .time-box span:first-child {
+            display: block;
+            font-size: clamp(3em, 10vw, 5em);
+            font-weight: bold;
+            color: #ff69b4;
+            text-shadow: 0 0 35px #ffd700;
+        }
+
+        .time-box span:last-child {
+            font-size: clamp(1em, 4vw, 1.4em);
+            text-transform: uppercase;
+            color: #ffd700;
+            letter-spacing: 3px;
+            margin-top: 10px;
+        }
+
+        .wish-area {
+            margin: 40px 0;
+            font-size: clamp(1.5em, 5vw, 2.5em);
+            color: #fff;
+            line-height: 1.6;
+            min-height: 150px;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .wish-area.active {
+            opacity: 1;
+        }
+
+        .wish-text {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            border: 2px dashed #ffd700;
+            font-size: clamp(1.2em, 4vw, 2em);
+        }
+
+        .toggle-btn {
+            padding: clamp(12px, 4vw, 15px) clamp(30px, 8vw, 40px);
+            font-size: clamp(1.2em, 5vw, 1.8em);
+            background: linear-gradient(45deg, #ff1493, #ff69b4);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 20px 0;
+            box-shadow: 0 10px 40px rgba(255, 105, 180, 0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        .celebration {
+            font-size: clamp(3em, 10vw, 5.5em);
+            color: #ffd700;
+            text-shadow: 0 0 80px #ff69b4;
+            line-height: 1.5;
+            display: none;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .fireworks {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 2s;
+        }
+
+        .fireworks.active {
+            opacity: 1;
+        }
+
+        .fireworks img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .fly-emoji {
+            position: absolute;
+            font-size: clamp(2.5em, 8vw, 4em);
+            pointer-events: none;
+            animation: flyUp 2s ease-out forwards;
+            z-index: 10;
+        }
+
+        @keyframes flyUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-500px) scale(0.5); opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: clamp(20px, 5vw, 30px); }
+            h1 { font-size: 3em; }
+            .subtitle { font-size: 1.8em; }
+            .countdown { gap: 15px; }
+            .time-box { padding: 20px; min-width: 120px; }
+            .time-box span:first-child { font-size: 3.5em; }
+            .celebration { font-size: 4em; }
+            .emoji-top, .emoji-bottom { font-size: 4em; }
+            .wish-area { font-size: 2em; }
+            .toggle-btn { font-size: 1.5em; padding: 12px 30px; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2.5em; }
+            .subtitle { font-size: 1.5em; }
+            .time-box span:first-child { font-size: 3em; }
+            .time-box span:last-child { font-size: 1em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="overlay"></div>
+
+    <div class="fireworks" id="fireworks">
+        <img src="https://i.pinimg.com/originals/76/b5/82/76b58298e9cee7c935f9ec9ba1433508.gif" loading="lazy">
+        <img src="https://i.pinimg.com/originals/7a/f2/ef/7af2ef0b0b2294982218b48d4a1f488b.gif" loading="lazy">
+        <img src="https://media.tenor.com/ZYSYsmBaqHMAAAAM/fireworks-firework.gif" loading="lazy">
+        <img src="https://i.gifer.com/7J8Z.gif" loading="lazy">
+    </div>
+
+    <main class="container">
+        <div class="emoji-top">🎉🥳🎂🎊🎆🎈✨</div>
+
+        <h1 class="rainbow-border">NGUYỄN XUÂN BẮC<br>(Greenboymc)</h1>
+
+        <p class="subtitle">được code bởi Nguyễn Chí Dự</p>
+
+        <div class="countdown" id="countdown">
+            <div class="time-box"><span id="days">00</span><span>Ngày</span></div>
+            <div class="time-box"><span id="hours">00</span><span>Giờ</span></div>
+            <div class="time-box"><span id="minutes">00</span><span>Phút</span></div>
+            <div class="time-box"><span id="seconds">00</span><span>Giây</span></div>
+        </div>
+
+        <!-- Khu vực lời chúc tự động + nút bật/tắt -->
+        <div class="wish-area" id="wishArea">
+            <button class="toggle-btn" id="toggleWishBtn">BẬT TỰ ĐỘNG LỜI CHÚC</button>
+            <div id="wishText" class="wish-text"></div>
+        </div>
+
+        <div class="celebration" id="celebration">
+            🎉🎊🥳🎆🎂🎈✨<br>
+            CHÚC MỪNG SINH NHẬT<br>
+            NGUYỄN XUÂN BẮC!<br><br>
+            Năm nay bạn đã tròn <strong>22 tuổi</strong> 🍰🎁<br>
+            CHÚC MỪNG BẠN!!! 🎇🥂🎉
+        </div>
+
+        <div class="emoji-bottom">🎁🍰🎈🎊🥳🎉✨</div>
+    </main>
+
+    <script>
+        // Emoji bay (nhẹ, mượt, giới hạn để không lag)
+        const emojis = ['🎉','🎊','🎂','🥳','🎈','🎁','🍰','✨','🎆','🎇','🎀','🍭','🎁','🥂'];
+        let activeEmojis = 0;
+        const MAX_EMOJIS = 10;
+
+        document.body.addEventListener('click', e => {
+            if (activeEmojis >= MAX_EMOJIS) return;
+
+            const el = document.createElement('div');
+            el.classList.add('fly-emoji');
+            el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            el.style.left = `${e.clientX}px`;
+            el.style.top = `${e.clientY}px`;
+            document.body.appendChild(el);
+            activeEmojis++;
+
+            setTimeout(() => {
+                if (el.parentNode) el.remove();
+                activeEmojis--;
+            }, 1800);
+        });
+
+        // Countdown chuẩn đến 20:00 ngày 28/02 năm tới (từ 2004)
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        let nextBirthday = new Date(currentYear, 1, 28, 20, 0, 0); // Tháng 2 index 1, 20:00
+
+        if (now > nextBirthday) {
+            nextBirthday.setFullYear(currentYear + 1);
+        }
+
+        const countdownEl = document.getElementById('countdown');
+        const celebrationEl = document.getElementById('celebration');
+        const fireworksEl = document.getElementById('fireworks');
+
+        let lastSecond = 0;
+
+        function updateCountdown(time) {
+            const currentSecond = Math.floor(time / 1000);
+            if (currentSecond === lastSecond) {
+                requestAnimationFrame(updateCountdown);
+                return;
+            }
+            lastSecond = currentSecond;
+
+            const diff = nextBirthday - Date.now();
+
+            if (diff <= 0) {
+                countdownEl.style.opacity = '0';
+                setTimeout(() => {
+                    countdownEl.style.display = 'none';
+                    celebrationEl.style.display = 'block';
+                    celebrationEl.style.opacity = '1';
+                    fireworksEl.classList.add('active');
+                }, 1200);
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+
+            requestAnimationFrame(updateCountdown);
+        }
+
+        requestAnimationFrame(updateCountdown);
+
+        // Tự động lời chúc + nút bật/tắt
+        const toggleWishBtn = document.getElementById('toggleWishBtn');
+        const wishText = document.getElementById('wishText');
+        const wishArea = document.getElementById('wishArea');
+        let wishInterval = null;
+        let isWishActive = false;
+
+        const wishes = [
+            "Chúc mừng sinh nhật Nguyễn Xuân Bắc (Greenboymc)! 🎂 Chúc bạn tuổi mới tràn đầy năng lượng, thành công rực rỡ và luôn vui vẻ bên bạn bè nhé! 🥳",
+            "Happy Birthday Greenboymc! 🎉 Chúc bạn có một năm mới thật nhiều niềm vui, sức khỏe dồi dào và đạt được mọi mục tiêu đã đặt ra! 💪✨",
+            "Sinh nhật vui vẻ nha Xuân Bắc! 🎈 Chúc bạn luôn giữ được sự trẻ trung, sáng tạo và thành công trong mọi lĩnh vực! 🚀",
+            "Chúc Greenboymc tuổi mới thật hạnh phúc, gặp nhiều may mắn và luôn cười thật tươi mỗi ngày nhé! 😄❤️",
+            "Happy 22nd Birthday! 🎊 Chúc bạn có thật nhiều khoảnh khắc đáng nhớ, bạn bè tốt và cuộc sống luôn màu hồng! 🌸",
+            "NGUYỄN CHÍ DỰ : CHÚC BẠN TUI GREENBOYMC TUỔI MỚI VUI VẺ NHA, SINH NHẬT VUI VẺ NHÉ GREENBOYMC (BẠN THÂN CỦA TUI 🎂🥳😘"
+        ];
+
+        function showRandomWish() {
+            const randomWish = wishes[Math.floor(Math.random() * wishes.length)];
+            wishText.textContent = randomWish;
+            wishText.style.opacity = '1';
+        }
+
+        toggleWishBtn.addEventListener('click', () => {
+            if (isWishActive) {
+                clearInterval(wishInterval);
+                wishText.style.opacity = '0';
+                toggleWishBtn.textContent = 'BẬT TỰ ĐỘNG LỜI CHÚC';
+                isWishActive = false;
+            } else {
+                wishArea.style.opacity = '1';
+                showRandomWish();
+                wishInterval = setInterval(showRandomWish, 8000); // Chuyển lời chúc mỗi 8 giây
+                toggleWishBtn.textContent = 'TẮT TỰ ĐỘNG LỜI CHÚC';
+                isWishActive = true;
+            }
+        });
+
+        // Tự động bật lời chúc khi đến giờ sinh nhật (trong khoảng 10 phút quanh giờ)
+        if (Date.now() >= nextBirthday.getTime() - 60000 && Date.now() <= nextBirthday.getTime() + 600000) {
+            toggleWishBtn.click(); // Tự bật
+        }
+    </script>
+</body>
+</html>
